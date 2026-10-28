@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
     categoryUrl.searchParams.set("order", "sort_order.asc,category_label.asc");
 
     const rewardUrl = new URL(`${url}/rest/v1/trigger_rewards_config`);
-    rewardUrl.searchParams.set("select", "category,category_label,category_emoji,reward_name,invite_requirement,sort_order");
+    rewardUrl.searchParams.set("select", "category,category_label,category_emoji,reward_name,invite_requirement,reward_text,sort_order");
     rewardUrl.searchParams.set("guild_id", `eq.${guildId}`);
     rewardUrl.searchParams.set("active", "eq.true");
     rewardUrl.searchParams.set("order", "sort_order.asc,reward_name.asc");
