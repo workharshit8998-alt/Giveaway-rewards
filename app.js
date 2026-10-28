@@ -44,7 +44,20 @@ document.addEventListener("DOMContentLoaded", () => {
   if (categoryGrid || optionList) loadRewards();
 
   const chosen = document.querySelector("#chosen-option");
-  if (chosen) { chosen.textContent = option || "Choose an option first"; const code = document.querySelector("#demo-code-display"); if (code) code.textContent = "CODE NOT SET"; }
+  if (chosen) {
+    chosen.textContent = option || "Choose an option first";
+    const code = document.querySelector("#demo-code-display");
+    const details = document.querySelector("#reward-details");
+    fetch("/api/rewards", { headers: { "Accept": "application/json" }, cache: "no-store" })
+      .then(r => r.ok ? r.json() : Promise.reject(new Error("Unable to load reward details.")))
+      .then(data => {
+        const cat = (data.categories || []).find(c => c.category_key === requestedCategory);
+        const reward = (data.rewards || []).find(r => r.category === requestedCategory && r.reward_name === option);
+        if (code) code.textContent = "";
+        if (details) details.textContent = reward ? (reward.reward_text || "") : "";
+        if (chosen && !reward) chosen.textContent = "Reward unavailable";
+      }).catch(() => { if (code) code.textContent = ""; if (details) details.textContent = ""; });
+  }
   const timer = document.querySelector("#timer-value");
   if (timer) {
     const label = document.querySelector("#timer-message"), finish = document.querySelector("#timer-finish");
