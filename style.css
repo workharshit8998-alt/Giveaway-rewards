@@ -11,3 +11,21 @@
 .button-gold{background:linear-gradient(120deg,#ffdc82,#e9b54f 55%,#f49a62);box-shadow:0 5px 18px #e8bd6120}
 .site-header .brand-icon{background:linear-gradient(135deg,#ffdb83,#e7ae4b 55%,#ec8f78)}
 @media(max-width:680px){.category-card{border-radius:16px}.category-card .button{width:100%}}
+
+/* Reward code entry and horizontal timer */
+.reward-details-display{min-height:18px;margin:18px 0;color:var(--gold2);overflow-wrap:anywhere}
+.reward-detail-text{color:var(--muted);font-size:14px;white-space:pre-wrap}
+.reward-code-form{display:grid;gap:10px;text-align:left;margin:22px auto;max-width:430px}
+.reward-code-form label{font-size:12px;font-weight:700;color:#e4d4ad}
+.reward-code-form input{width:100%;min-height:50px;padding:12px 14px;border:1px solid #66542f;border-radius:10px;background:#0b0c0f;color:var(--text);font-size:15px;outline:none}
+.reward-code-form input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #e8bd6118}
+.reward-code-form .button{width:100%;min-height:48px}
+.reward-code-result{min-height:18px;margin:0;color:var(--gold2);font-size:12px;text-align:center}
+.flow-progress a{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;padding:7px 11px;color:#a4a6af;font-size:10px;text-decoration:none}
+.flow-progress a:hover{border-color:#8b713d;color:var(--gold2)}
+.timer-line{display:flex;align-items:center;justify-content:center;gap:clamp(8px,3vw,22px);width:100%;max-width:510px;margin:28px auto;padding:22px 10px;border:1px solid #66542f;border-radius:16px;background:#0b0c0f}
+.timer-line span{display:flex;flex-direction:column;align-items:center;min-width:0;flex:1}
+.timer-line b{font:800 clamp(27px,7vw,54px)/1.1 'Manrope',sans-serif;color:var(--gold2);font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.timer-line small{margin-top:7px;color:var(--muted);font-size:clamp(8px,2vw,10px);letter-spacing:1.2px}
+.timer-line i{font-style:normal;font-size:clamp(22px,5vw,36px);color:#8b713d;align-self:center;margin-top:-13px}
+@media(max-width:420px){.timer-line{gap:5px;padding:18px 6px}.timer-line b{font-size:29px}.timer-line small{font-size:8px;letter-spacing:.5px}.flow-progress a,.flow-progress span{padding:6px 7px;font-size:9px}}
