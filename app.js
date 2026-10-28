@@ -46,36 +46,65 @@ document.addEventListener("DOMContentLoaded", () => {
   const chosen = document.querySelector("#chosen-option");
   if (chosen) {
     chosen.textContent = option || "Choose an option first";
-    const code = document.querySelector("#reward-text-display");
     const details = document.querySelector("#reward-details");
-    fetch("/api/rewards", { headers: { "Accept": "application/json" }, cache: "no-store" })
-      .then(r => r.ok ? r.json() : Promise.reject(new Error("Unable to load reward details.")))
-      .then(data => {
-        const cat = (data.categories || []).find(c => c.category_key === requestedCategory);
-        const reward = (data.rewards || []).find(r => r.category === requestedCategory && r.reward_name === option);
-        if (code) code.textContent = "";
-        if (details) details.textContent = reward ? (reward.reward_text || "") : "";
-        if (chosen && !reward) chosen.textContent = "Reward unavailable";
-      }).catch(() => { if (code) code.textContent = ""; if (details) details.textContent = ""; });
-  }
-  const codeForm = document.querySelector("#reward-code-form");
-  if (codeForm) {
+    const form = document.querySelector("#reward-code-form");
     const codeInput = document.querySelector("#reward-code-input");
     const codeResult = document.querySelector("#reward-code-result");
-    const query = new URLSearchParams(location.search);
-    const category = query.get("category") || "";
-    const rewardOption = query.get("option") || "";
-    const optionUrl = "options.html?category=" + encodeURIComponent(category);
-    const codeUrl = "code.html?category=" + encodeURIComponent(category) + "&option=" + encodeURIComponent(rewardOption);
-    const optionsLink = document.querySelector("#code-options-link");
+    const continueButton = document.querySelector("#continue-timer");
     const timerLink = document.querySelector("#code-timer-link");
-    if (optionsLink) optionsLink.href = optionUrl;
-    if (timerLink) timerLink.href = "timer.html?category=" + encodeURIComponent(category) + "&option=" + encodeURIComponent(rewardOption);
-    codeForm.addEventListener("submit", event => {
+    const backOptions = document.querySelector("#back-options-link");
+    const optionsUrl = "options.html?category=" + encodeURIComponent(requestedCategory);
+    const timerUrl = "timer.html?category=" + encodeURIComponent(requestedCategory) + "&option=" + encodeURIComponent(option);
+    if (timerLink) timerLink.href = timerUrl;
+    if (backOptions) backOptions.href = optionsUrl;
+    if (continueButton) continueButton.href = timerUrl;
+    if (continueButton) { continueButton.classList.add("hidden"); continueButton.setAttribute("aria-hidden", "true"); }
+    fetch("/api/rewards", { headers: { "Accept": "application/json" }, cache: "no-store" })
+      .then(r => r.ok ? r.json() : Promise.reject(new Error("Unable to load rewards.")))
+      .then(data => {
+        const reward = (data.rewards || []).find(r => r.category === requestedCategory && r.reward_name === option);
+        if (!reward) {
+          chosen.textContent = "Reward unavailable";
+          if (form) form.hidden = true;
+          if (codeResult) codeResult.textContent = "This reward option is unavailable. Go back and choose an available reward.";
+          return;
+        }
+        if (details) {
+          const text = (reward.reward_text || "").trim();
+          details.textContent = text;
+          details.hidden = !text;
+        }
+      })
+      .catch(() => { if (details) details.hidden = true; });
+    if (form) form.addEventListener("submit", async event => {
       event.preventDefault();
       const value = (codeInput?.value || "").trim();
       if (!value) { if (codeResult) codeResult.textContent = "Enter a code first."; return; }
-      if (codeResult) codeResult.textContent = "Code entered. Automatic code verification is not connected yet.";
+      const button = form.querySelector('button[type="submit"]');
+      if (button) { button.disabled = true; button.textContent = "Checking…"; }
+      if (codeResult) { codeResult.textContent = ""; codeResult.className = "reward-code-result"; }
+      try {
+        const response = await fetch("/api/verify-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({ category: requestedCategory, option, code: value })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "Could not verify this code. Try again.");
+        if (result.valid === true) {
+          if (codeResult) { codeResult.textContent = "Code is correct."; codeResult.classList.add("is-success"); }
+          if (continueButton) { continueButton.classList.remove("hidden"); continueButton.setAttribute("aria-hidden", "false"); }
+          if (codeInput) codeInput.setAttribute("aria-invalid", "false");
+        } else {
+          if (codeResult) { codeResult.textContent = "Incorrect code. Please check it and try again."; codeResult.classList.add("is-error"); }
+          if (continueButton) { continueButton.classList.add("hidden"); continueButton.setAttribute("aria-hidden", "true"); }
+          if (codeInput) { codeInput.setAttribute("aria-invalid", "true"); codeInput.focus(); }
+        }
+      } catch (error) {
+        if (codeResult) { codeResult.textContent = error.message || "Could not verify this code. Try again."; codeResult.classList.add("is-error"); }
+      } finally {
+        if (button) { button.disabled = false; button.textContent = "Verify code →"; }
+      }
     });
   }
   const timer = document.querySelector("#timer-value");
