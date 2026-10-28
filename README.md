@@ -1,17 +1,16 @@
-# Trigger Rewards — Prototype
+# Trigger Rewards
 
-A mobile-friendly, dark/gold category-selection demo for YouTube-themed, Minecraft-themed, and OTT-themed options.
+Responsive multi-page dark-and-gold website prototype.
+
+## Pages
+- Home: index.html
+- Explore categories and interactive demo: rewards.html
+- How it works: how-it-works.html
+- FAQ: faq.html
+- Contact form preview: contact.html
 
 ## Important disclosure
+This is a front-end demo only. It does not deliver real rewards, validate codes, collect IP addresses in app code, send contact messages, or enforce a secure server-side cooldown. Hosting providers may process basic request data under their own policies. Do not enter passwords, payment details, or sensitive information.
 
-**This prototype does not provide any real rewards.** It does not verify codes, collect IP addresses, contact a database, or connect to a Discord bot. The demo form accepts text only to demonstrate the UI and starts a 72-hour countdown in the current browser's local storage.
-
-The local timer is not secure: it can be cleared or changed by the visitor and does not enforce a server-side cooldown.
-
-## Deploy on Vercel
-
-This is a static site. Import this repository into Vercel and set the project root to the repository root. No build command is required; the output directory is `.`.
-
-## Future production work
-
-Before adding code management or persistent cooldowns, build a server-side API with authenticated Discord-bot administration, server-side code validation, database-enforced claim limits, rate limiting, and a clear privacy notice. Do not store raw IP addresses longer than necessary. Keep the no-reward disclosure visible to visitors.
+## Deployment
+Static HTML/CSS/JavaScript. No build command is required; deploy from the repository root.
