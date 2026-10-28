@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadRewards() {
     try {
       const response = await fetch("/api/rewards", { headers: { "Accept": "application/json" }, cache: "no-store" });
-      if (!response.ok) throw new Error(response.status === 503 ? "Rewards are not configured yet. Ask the server administrator to finish the database setup." : "Could not load rewards right now.");
+      if (!response.ok) throw new Error(response.status === 503 ? "Reward categories have not been added yet." : "Could not load rewards right now.");
       const data = await response.json();
       const categories = Array.isArray(data.categories) ? data.categories : [];
       const rewards = Array.isArray(data.rewards) ? data.rewards : [];
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const chosen = document.querySelector("#chosen-option");
   if (chosen) {
     chosen.textContent = option || "Choose an option first";
-    const code = document.querySelector("#demo-code-display");
+    const code = document.querySelector("#reward-text-display");
     const details = document.querySelector("#reward-details");
     fetch("/api/rewards", { headers: { "Accept": "application/json" }, cache: "no-store" })
       .then(r => r.ok ? r.json() : Promise.reject(new Error("Unable to load reward details.")))
