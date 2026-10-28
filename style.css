@@ -43,3 +43,5 @@
 .reward-code-result.is-success{color:#8fe0ad}
 #continue-timer{margin-top:12px}
 #continue-timer.hidden{display:none!important}
+
+.flow-progress [hidden]{display:none!important}
