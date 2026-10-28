@@ -29,3 +29,17 @@
 .timer-line small{margin-top:7px;color:var(--muted);font-size:clamp(8px,2vw,10px);letter-spacing:1.2px}
 .timer-line i{font-style:normal;font-size:clamp(22px,5vw,36px);color:#8b713d;align-self:center;margin-top:-13px}
 @media(max-width:420px){.timer-line{gap:5px;padding:18px 6px}.timer-line b{font-size:29px}.timer-line small{font-size:8px;letter-spacing:.5px}.flow-progress a,.flow-progress span{padding:6px 7px;font-size:9px}}
+
+/* Compact code verification UI */
+.reward-detail-text{margin:0 0 14px;color:#b5b6be;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.reward-detail-text[hidden],.reward-code-form[hidden]{display:none!important}
+.reward-code-form{margin:18px auto 12px;max-width:430px;gap:11px}
+.reward-code-form label{font-size:13px}
+.reward-code-form input{min-height:54px;font-size:16px}
+.reward-code-form .button{min-height:52px;font-size:14px}
+.reward-code-result{min-height:0;font-size:13px;line-height:1.5}
+.reward-code-result:empty{display:none}
+.reward-code-result.is-error{color:#ff8e8e}
+.reward-code-result.is-success{color:#8fe0ad}
+#continue-timer{margin-top:12px}
+#continue-timer.hidden{display:none!important}
