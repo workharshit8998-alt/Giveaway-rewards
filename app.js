@@ -58,6 +58,26 @@ document.addEventListener("DOMContentLoaded", () => {
         if (chosen && !reward) chosen.textContent = "Reward unavailable";
       }).catch(() => { if (code) code.textContent = ""; if (details) details.textContent = ""; });
   }
+  const codeForm = document.querySelector("#reward-code-form");
+  if (codeForm) {
+    const codeInput = document.querySelector("#reward-code-input");
+    const codeResult = document.querySelector("#reward-code-result");
+    const query = new URLSearchParams(location.search);
+    const category = query.get("category") || "";
+    const rewardOption = query.get("option") || "";
+    const optionUrl = "options.html?category=" + encodeURIComponent(category);
+    const codeUrl = "code.html?category=" + encodeURIComponent(category) + "&option=" + encodeURIComponent(rewardOption);
+    const optionsLink = document.querySelector("#code-options-link");
+    const timerLink = document.querySelector("#code-timer-link");
+    if (optionsLink) optionsLink.href = optionUrl;
+    if (timerLink) timerLink.href = "timer.html?category=" + encodeURIComponent(category) + "&option=" + encodeURIComponent(rewardOption);
+    codeForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const value = (codeInput?.value || "").trim();
+      if (!value) { if (codeResult) codeResult.textContent = "Enter a code first."; return; }
+      if (codeResult) codeResult.textContent = "Code entered. Automatic code verification is not connected yet.";
+    });
+  }
   const timer = document.querySelector("#timer-value");
   if (timer) {
     const label = document.querySelector("#timer-message"), finish = document.querySelector("#timer-finish");
@@ -65,8 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const duration = 72 * 60 * 60 * 1000; let start = Number(localStorage.getItem(key));
     if (!start || !Number.isFinite(start) || start > Date.now()) { start = Date.now(); localStorage.setItem(key, String(start)); }
     const end = start + duration;
-    const update = () => { const remaining = Math.max(0, end-Date.now()); const hours=Math.floor(remaining/3600000), minutes=Math.floor((remaining%3600000)/60000), seconds=Math.floor((remaining%60000)/1000); timer.textContent=hours+"h "+String(minutes).padStart(2,"0")+"m "+String(seconds).padStart(2,"0")+"s"; if (remaining<=0) { clearInterval(interval); if(label) label.textContent="72-hour wait period finished. Reward fulfillment still needs to be configured."; if(finish) finish.classList.remove("hidden"); } };
-    if (label) label.textContent = "72-hour wait period"; update(); const interval = setInterval(update, 1000);
+    const update = () => { const remaining = Math.max(0, end-Date.now()); const hours=Math.floor(remaining/3600000), minutes=Math.floor((remaining%3600000)/60000), seconds=Math.floor((remaining%60000)/1000); timer.innerHTML="<span><b>"+String(hours).padStart(2,"0")+"</b><small>HOURS</small></span><i>:</i><span><b>"+String(minutes).padStart(2,"0")+"</b><small>MINUTES</small></span><i>:</i><span><b>"+String(seconds).padStart(2,"0")+"</b><small>SECONDS</small></span>"; if (remaining<=0) { clearInterval(interval); if(label) label.textContent="72-hour wait period finished. Reward fulfillment still needs to be configured."; if(finish) finish.classList.remove("hidden"); } };
+    const optionsLink = document.querySelector("#timer-options-link"), codeLink = document.querySelector("#timer-code-link"); if (optionsLink) optionsLink.href = "options.html?category=" + encodeURIComponent(params.get("category") || ""); if (codeLink) codeLink.href = "code.html?category=" + encodeURIComponent(params.get("category") || "") + "&option=" + encodeURIComponent(option); if (label) label.textContent = "72-hour wait period"; update(); const interval = setInterval(update, 1000);
   }
   const contact=document.querySelector("#contact-form");
   if(contact) contact.addEventListener("submit", e => { e.preventDefault(); const result=document.querySelector("#contact-result"); if(result) result.textContent="Preview only: this message was not sent or saved."; contact.reset(); });
