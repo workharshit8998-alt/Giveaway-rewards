@@ -1,6 +1,6 @@
 # Trigger Rewards
 
-Responsive multi-page static website with a small Vercel serverless API and Supabase event logging.
+Responsive multi-page static website with a Vercel serverless API and Supabase demo-event logging.
 
 ## Pages
 - `index.html` — Home
@@ -9,10 +9,16 @@ Responsive multi-page static website with a small Vercel serverless API and Supa
 - `faq.html` — FAQ
 - `contact.html` — contact-form preview only
 
-## Supabase + Vercel setup
-Set these **private Vercel environment variables** for Production (and Preview if needed):
-- `SUPABASE_URL` — Supabase project API URL
-- `SUPABASE_SERVICE_ROLE_KEY` — Supabase service-role/secret key; server-side only, never prefix it with `NEXT_PUBLIC_` and never put it in GitHub.
+## Dedicated Supabase project
+Trigger Rewards uses a separate project, so the Alt Generator database is not used by this site:
+- Dashboard: https://supabase.com/dashboard/project/rhhvpyeowumfludgjcnw
+- API URL: `https://rhhvpyeowumfludgjcnw.supabase.co`
+- Table: `public.trigger_demo_events`
+
+## Vercel environment variables
+Set these as private Vercel project environment variables:
+- `SUPABASE_URL` — `https://rhhvpyeowumfludgjcnw.supabase.co`
+- `SUPABASE_SERVICE_ROLE_KEY` — private service-role/secret key for this dedicated project. Server-side only; never prefix it with `NEXT_PUBLIC_` and never put it in GitHub.
 
 The `api/demo-event.js` endpoint saves only a fixed category and timestamp to `public.trigger_demo_events`. The table has RLS enabled and no public access. The endpoint does not store entered labels or collect IP addresses in app code.
 
