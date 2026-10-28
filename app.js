@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const backOptions = document.querySelector("#back-options-link");
     const optionsUrl = "options.html?category=" + encodeURIComponent(requestedCategory);
     const timerUrl = "timer.html?category=" + encodeURIComponent(requestedCategory) + "&option=" + encodeURIComponent(option);
-    if (timerLink) timerLink.href = timerUrl;
+    if (timerLink) { timerLink.href = timerUrl; timerLink.hidden = true; }
     if (backOptions) backOptions.href = optionsUrl;
     if (continueButton) continueButton.href = timerUrl;
     if (continueButton) { continueButton.classList.add("hidden"); continueButton.setAttribute("aria-hidden", "true"); }
@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (result.valid === true) {
           if (codeResult) { codeResult.textContent = "Code is correct."; codeResult.classList.add("is-success"); }
           if (continueButton) { continueButton.classList.remove("hidden"); continueButton.setAttribute("aria-hidden", "false"); }
+          if (timerLink) timerLink.hidden = false;
           if (codeInput) codeInput.setAttribute("aria-invalid", "false");
         } else {
           if (codeResult) { codeResult.textContent = "Incorrect code. Please check it and try again."; codeResult.classList.add("is-error"); }
