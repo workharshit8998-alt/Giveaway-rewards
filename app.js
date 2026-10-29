@@ -92,6 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || "Could not verify this code. Try again.");
         if (result.valid === true) {
+          // Start and persist a separate 72-hour timer for this exact category + reward.
+          const rewardTimerKey = "trg_reward_timer_v2_" + encodeURIComponent(requestedCategory) + "_" + encodeURIComponent(option);
+          if (!localStorage.getItem(rewardTimerKey)) localStorage.setItem(rewardTimerKey, String(Date.now()));
           if (codeResult) { codeResult.textContent = "Code is correct."; codeResult.classList.add("is-success"); }
           if (continueButton) { continueButton.classList.remove("hidden"); continueButton.setAttribute("aria-hidden", "false"); }
           if (timerLink) timerLink.hidden = false;
@@ -111,8 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const timer = document.querySelector("#timer-value");
   if (timer) {
     const label = document.querySelector("#timer-message"), finish = document.querySelector("#timer-finish");
-    const key = "trg_reward_timer_v1_" + btoa(unescape(encodeURIComponent((params.get("category") || "") + "|" + option))).replace(/[^a-zA-Z0-9]/g, "");
+    const categoryKey = params.get("category") || "";
+    const key = "trg_reward_timer_v2_" + encodeURIComponent(categoryKey) + "_" + encodeURIComponent(option);
     const duration = 72 * 60 * 60 * 1000; let start = Number(localStorage.getItem(key));
+    // Separate timer per exact category/reward; fallback supports direct timer-page visits.
     if (!start || !Number.isFinite(start) || start > Date.now()) { start = Date.now(); localStorage.setItem(key, String(start)); }
     const end = start + duration;
     const update = () => { const remaining = Math.max(0, end-Date.now()); const hours=Math.floor(remaining/3600000), minutes=Math.floor((remaining%3600000)/60000), seconds=Math.floor((remaining%60000)/1000); timer.innerHTML="<span><b>"+String(hours).padStart(2,"0")+"</b><small>HOURS</small></span><i>:</i><span><b>"+String(minutes).padStart(2,"0")+"</b><small>MINUTES</small></span><i>:</i><span><b>"+String(seconds).padStart(2,"0")+"</b><small>SECONDS</small></span>"; if (remaining<=0) { clearInterval(interval); if(label) label.textContent="Timer finished. Your reward will be provided in your DM."; if(finish) finish.classList.remove("hidden"); } };
