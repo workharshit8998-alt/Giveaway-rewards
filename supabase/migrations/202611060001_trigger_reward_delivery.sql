@@ -89,7 +89,7 @@ create or replace function public.trg_reserve_reward_delivery(
 language plpgsql
 security definer
 set search_path = public, pg_temp
-as $
+as $$
 declare
   v_claim public.trg_reward_claims%rowtype;
   v_stock public.trg_reward_inventory%rowtype;
@@ -151,7 +151,7 @@ begin
     'secret_payload', v_stock.secret_payload
   );
 end;
-$;
+$$;
 
 -- Finalize a delivery. Failed DMs release stock so an administrator can retry.
 create or replace function public.trg_finish_reward_delivery(
@@ -164,7 +164,7 @@ create or replace function public.trg_finish_reward_delivery(
 language plpgsql
 security definer
 set search_path = public, pg_temp
-as $
+as $$
 declare
   v_delivery public.trg_reward_deliveries%rowtype;
 begin
@@ -211,7 +211,7 @@ begin
 
   return true;
 end;
-$;
+$$;
 
 revoke all on function public.trg_reserve_reward_delivery(uuid, text, text) from public, anon, authenticated;
 revoke all on function public.trg_finish_reward_delivery(uuid, uuid, text, boolean, text) from public, anon, authenticated;
