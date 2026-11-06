@@ -45,6 +45,7 @@ create table if not exists public.trg_reward_deliveries (
   status text not null default 'queued'
     check (status in ('queued','sending','sent','failed')),
   discord_message_id text,
+  initiated_by_discord_id text,
   error_code text,
   attempts integer not null default 0,
   created_at timestamptz not null default now(),
@@ -76,9 +77,11 @@ create unique index if not exists trg_claims_source_ticket_uidx
 
 -- Reserve exactly one matching stock item and move the claim into delivery_pending.
 -- The function is callable only with the bot's service-role key.
+drop function if exists public.trg_reserve_reward_delivery(uuid, text);
 create or replace function public.trg_reserve_reward_delivery(
   p_claim_id uuid,
-  p_guild_id text
+  p_guild_id text,
+  p_actor_discord_id text default null
 ) returns jsonb
 language plpgsql
 security definer
@@ -127,15 +130,16 @@ begin
   where id = v_claim.id;
 
   insert into public.trg_reward_deliveries
-    (claim_id, discord_user_id, status, attempts, error_code, sent_at, discord_message_id)
+    (claim_id, discord_user_id, status, attempts, error_code, sent_at, discord_message_id, initiated_by_discord_id)
   values
-    (v_claim.id, v_claim.discord_user_id, 'sending', 1, null, null, null)
+    (v_claim.id, v_claim.discord_user_id, 'sending', 1, null, null, null, p_actor_discord_id)
   on conflict (claim_id) do update
     set status = 'sending',
         attempts = public.trg_reward_deliveries.attempts + 1,
         error_code = null,
         sent_at = null,
-        discord_message_id = null;
+        discord_message_id = null,
+        initiated_by_discord_id = p_actor_discord_id;
 
   return jsonb_build_object(
     'inventory_id', v_stock.id,
@@ -206,9 +210,9 @@ begin
 end;
 $;
 
-revoke all on function public.trg_reserve_reward_delivery(uuid, text) from public, anon, authenticated;
+revoke all on function public.trg_reserve_reward_delivery(uuid, text, text) from public, anon, authenticated;
 revoke all on function public.trg_finish_reward_delivery(uuid, uuid, text, boolean, text) from public, anon, authenticated;
-grant execute on function public.trg_reserve_reward_delivery(uuid, text) to service_role;
+grant execute on function public.trg_reserve_reward_delivery(uuid, text, text) to service_role;
 grant execute on function public.trg_finish_reward_delivery(uuid, uuid, text, boolean, text) to service_role;
 
 
