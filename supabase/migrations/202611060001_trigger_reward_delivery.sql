@@ -148,7 +148,8 @@ begin
     'inventory_id', v_stock.id,
     'discord_user_id', v_claim.discord_user_id,
     'reward_name', v_claim.reward_name,
-    'secret_payload', v_stock.secret_payload
+    'secret_payload', v_stock.secret_payload,
+    'source_ticket_channel_id', v_claim.source_ticket_channel_id
   );
 end;
 $$;
