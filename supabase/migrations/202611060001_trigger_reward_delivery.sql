@@ -53,6 +53,9 @@ create table if not exists public.trg_reward_deliveries (
   unique (claim_id)
 );
 
+alter table public.trg_reward_deliveries
+  add column if not exists initiated_by_discord_id text;
+
 create index if not exists trg_claims_pending_idx
   on public.trg_reward_claims (guild_id, status, requested_at desc);
 create index if not exists trg_inventory_available_idx
