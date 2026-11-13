@@ -98,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const end = start + TIMER_DURATION;
+    let interval = null;
     const update = () => {
       const remaining = Math.max(0, end - Date.now());
       const hours = Math.floor(remaining / 3600000);
@@ -118,6 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (label) label.textContent = "Your 72-hour waiting timer is running.";
     update();
-    const interval = setInterval(update, 1000);
+    interval = setInterval(update, 1000);
   }
 });
