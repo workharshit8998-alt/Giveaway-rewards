@@ -45,3 +45,12 @@
 #continue-timer.hidden{display:none!important}
 
 .flow-progress [hidden]{display:none!important}
+
+
+/* Single-code-entry page */
+.code-entry-panel{max-width:590px;margin:10px auto 70px;padding:34px 30px}
+.code-entry-icon{width:54px;height:54px;display:grid;place-items:center;margin:0 auto 18px;border:1px solid #806a3b;border-radius:16px;background:#2a2317;color:var(--gold2);font-size:25px;box-shadow:0 0 28px #e8bd6118}
+.code-entry-copy{color:var(--muted);font-size:13px;margin:0 0 12px}
+.code-entry-note{text-align:left;margin-top:24px}
+.code-entry-panel .reward-code-form{max-width:460px}
+@media(max-width:680px){.code-entry-panel{padding:26px 17px;margin:8px auto 48px}}
